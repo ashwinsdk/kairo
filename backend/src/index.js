@@ -35,8 +35,18 @@ app.use(helmet({
 }));
 
 // CORS
+// CORS - support a comma-separated list in CORS_ORIGIN and respond with a single origin
+const rawCors = process.env.CORS_ORIGIN || 'http://localhost:4200';
+const allowedOrigins = rawCors.split(',').map(s => s.trim().replace(/\/+$/, ''));
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+    origin: (origin, callback) => {
+        // allow non-browser requests (e.g. curl, server-to-server)
+        if (!origin) return callback(null, true);
+        const normalized = origin.replace(/\/+$/, '');
+        if (allowedOrigins.includes(normalized)) return callback(null, true);
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
