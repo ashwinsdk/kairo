@@ -1,0 +1,186 @@
+// Kairo Services -- Motion Tokens
+// Brutalist motion: purposeful, non-decorative
+@use 'tokens' as *;
+
+// === Easing ===
+$ease-primary: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-snap: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-linear: linear;
+
+// === Durations ===
+$duration-micro: 120ms;
+$duration-micro-max: 180ms;
+$duration-small: 200ms;
+$duration-small-max: 320ms;
+$duration-medium: 350ms;
+$duration-medium-max: 550ms;
+$duration-long: 600ms;
+$duration-shimmer: 800ms;
+$duration-entrance: 260ms;
+
+// === Keyframe Presets ===
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-4px);
+    }
+
+    40% {
+        transform: translateX(4px);
+    }
+
+    60% {
+        transform: translateX(-2px);
+    }
+
+    80% {
+        transform: translateX(2px);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// === Reduced Motion ===
+@mixin motion-safe {
+    @media (prefers-reduced-motion: no-preference) {
+        @content;
+    }
+}
+
+@mixin motion-reduce {
+    @media (prefers-reduced-motion: reduce) {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+// === Mixins ===
+@mixin animate-entrance($delay: 0ms) {
+    @include motion-safe {
+        animation: fadeUp $duration-entrance $ease-primary both;
+        animation-delay: $delay;
+    }
+}
+
+@mixin animate-button-press {
+    @include motion-safe {
+        transition: transform $duration-micro $ease-primary, box-shadow $duration-micro $ease-primary;
+
+        &:active {
+            transform: scale(0.97);
+            box-shadow: $shadow-md;
+        }
+    }
+}
+
+@mixin skeleton-shimmer {
+    background: linear-gradient(90deg, $color-surface-elevated 25%, $color-surface-hover 50%, $color-surface-elevated 75%);
+    background-size: 200% 100%;
+
+    @include motion-safe {
+        animation: shimmer $duration-shimmer $ease-linear infinite;
+    }
+}
